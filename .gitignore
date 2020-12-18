@@ -1,0 +1,16 @@
+# environment
+.env
+
+# development
+venv
+
+# IDE
+.idea
+.vscode
+
+# misc
+app/__pycache__/*
+__pycache__
+
+node_modules
+
