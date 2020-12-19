@@ -8,6 +8,7 @@ const oraiEventSchema = new mongoose.Schema({
     tx_hash: String,
     tokenA: String,
     tokennB: String,
+    liquidity: String,
     amountADesired: String,
     amountBDesired: String,
     amountAMin: String,

@@ -59,7 +59,27 @@ async function analysis_transaction(tx, address) {
                 "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[7])
             }
             result_insert = await new OraiEnventDB(data_insert).save()
-            console.log("record id", result_insert._id);
+            console.log("record id method addLiquidity", result_insert._id);
+        }
+
+        if (result.method == "removeLiquidity") {
+            data_insert = {
+                "method": result.method,
+                "block_number": data.blockNumber,
+                "from_address": data.from.toLowerCase(),
+                "to_address": data.to.toLowerCase(),
+                "addres_pool": address,
+                "tx_hash": tx,
+                "tokenA": "0x" + result.inputs[0].toLowerCase(),
+                "tokennB": "0x" + result.inputs[1].toLowerCase(),
+                "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[2]),
+                "amountAMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[3]),
+                "amountBMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[4]),
+                "to": "0x" + result.inputs[5].toLowerCase(),
+                "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[6])
+            }
+            result_insert = await new OraiEnventDB(data_insert).save()
+            console.log("record id method removeLiquidity", result_insert._id);
         }
     } catch (error) {
         console.log("this is error when analysis_transaction ", error);
