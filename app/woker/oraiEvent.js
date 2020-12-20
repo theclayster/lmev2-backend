@@ -37,10 +37,16 @@ async function listenLog(address) {
 
 async function analysis_transaction(tx, address) {
     try {
+        check_exits_tx = await OraiEnventDB.findOne({ "tx_hash": tx })
+        if (check_exits_tx) {
+            console.log("transaction  " + tx + " already exist");
+            return
+        }
         data = await eth_network.get_lib_main_net().eth.getTransaction(tx)
         input_data = data.input
 
         result = decoder.decodeData(input_data)
+
         if (result.method == "addLiquidity") {
             data_insert = {
                 "method": result.method,
@@ -139,6 +145,28 @@ async function analysis_transaction(tx, address) {
             result_insert = await new OraiEnventDB(data_insert).save()
             console.log("record id method removeLiquidityWithPermit", result_insert._id);
         }
+        if (result.method == "removeLiquidityETHWithPermit") {
+            data_insert = {
+                "method": result.method,
+                "block_number": data.blockNumber,
+                "from_address": data.from.toLowerCase(),
+                "to_address": data.to.toLowerCase(),
+                "addres_pool": address,
+                "tx_hash": tx,
+                "token": "0x" + result.inputs[0].toLowerCase(),
+                "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[1]),
+                "amountTokenMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[2]),
+                "amountETHMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[3]),
+                "to": "0x" + result.inputs[4].toLowerCase(),
+                "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[5]),
+                "approveMax": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[6]),
+                "v": result.inputs[7],
+                "r": "0x" + eth_network.get_lib_main_net().utils.bytesToHex(result.inputs[8]),
+                "s": "0x" + eth_network.get_lib_main_net().utils.bytesToHex(result.inputs[9])
+            }
+            result_insert = await new OraiEnventDB(data_insert).save()
+            console.log("record id method removeLiquidityETHWithPermit", result_insert._id);
+        }
     } catch (error) {
         console.log("this is error when analysis_transaction ", error);
     }
@@ -146,3 +174,5 @@ async function analysis_transaction(tx, address) {
 }
 
 listenLog(ADDRESS_POOL)
+
+// analysis_transaction("0xe3f2406c045ef2952d617c7f36c60cef2cac7def269fcc02245d4ae8ea4fc52b", "0x9081b50bad8beefac48cc616694c26b027c559bb")
