@@ -174,5 +174,3 @@ async function analysis_transaction(tx, address) {
 }
 
 listenLog(ADDRESS_POOL)
-
-// analysis_transaction("0xe3f2406c045ef2952d617c7f36c60cef2cac7def269fcc02245d4ae8ea4fc52b", "0x9081b50bad8beefac48cc616694c26b027c559bb")
