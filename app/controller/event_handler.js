@@ -21,7 +21,7 @@ module.exports = {
             console.log(get_all_account);
             for (let i = 0; i < get_all_account.length; i++) {
                 if (get_all_account[i].method == "removeLiquidityETHWithPermit" || get_all_account[i].method == "removeLiquidityWithPermit" || get_all_account[i].method == "removeLiquidity" || get_all_account[i].method == "removeLiquidityETH") {
-                    console.log("vao day");
+                    
                     myLiquidity -= get_all_account[i].liquidity
                 }
                 if (get_all_account[i].method == "addLiquidityETH" || get_all_account[i].method == "addLiquidity") {

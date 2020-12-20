@@ -7,7 +7,7 @@ const InputDataDecoder = require("ethereum-input-data-decoder");
 
 // *********************************************
 // Infomation config
-const ADDRESS_POOL = "0xbb2b8038a1640196fbe3e38816f3e67cba72d940"
+const ADDRESS_POOL = "0x9081b50bad8beefac48cc616694c26b027c559bb"
 // abi of contract pool
 const oraiPool = require("../blockchain/abi/orai_pool.json")
 // config mongo
@@ -28,7 +28,6 @@ async function listenLog(address) {
             console.log("this is log error of oraiEvent worker ", err);
             return
         }
-        console.log(resp);
         try {
             analysis_transaction(resp.transactionHash, address)
             return
@@ -51,8 +50,6 @@ async function analysis_transaction(tx, address) {
 
         result = await decoder.decodeData(input_data)
         if (result.method == "addLiquidity") {
-
-
             get_tx_receipt = await eth_network.get_lib_main_net().eth.getTransactionReceipt(tx)
             data_insert = {
                 "method": result.method,
@@ -71,7 +68,7 @@ async function analysis_transaction(tx, address) {
                 "deadline": result.inputs[7],
                 "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(get_tx_receipt.logs[3].data)
             }
-            result_insert = await new OraiEnventDB(data_insert).save()
+            result_insert = await OraiEnventDB.findOneAndUpdate({ tx_hash: tx }, data_insert, { new: true, upsert: true })
             console.log("record id method addLiquidity", result_insert._id);
             return
 
@@ -94,7 +91,7 @@ async function analysis_transaction(tx, address) {
                 "deadline": result.inputs[5],
                 "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(get_tx_receipt.logs[3].data)
             }
-            result_insert = await new OraiEnventDB(data_insert).save()
+            result_insert = await OraiEnventDB.findOneAndUpdate({ tx_hash: tx }, data_insert, { new: true, upsert: true })
             console.log("record id method addLiquidityETH", result_insert._id);
             return
         }
@@ -113,7 +110,7 @@ async function analysis_transaction(tx, address) {
                 "to": "0x" + result.inputs[4],
                 "deadline": result.inputs[5]
             }
-            result_insert = await new OraiEnventDB(data_insert).save()
+            result_insert = await OraiEnventDB.findOneAndUpdate({ tx_hash: tx }, data_insert, { new: true, upsert: true })
             console.log("record id method removeLiquidityETH", result_insert._id);
             return
         }
@@ -133,7 +130,7 @@ async function analysis_transaction(tx, address) {
                 "to": "0x" + result.inputs[5],
                 "deadline": result.inputs[6]
             }
-            result_insert = await new OraiEnventDB(data_insert).save()
+            result_insert = await OraiEnventDB.findOneAndUpdate({ tx_hash: tx }, data_insert, { new: true, upsert: true })
             console.log("record id method removeLiquidity", result_insert._id);
             return
         }
@@ -157,7 +154,7 @@ async function analysis_transaction(tx, address) {
                 "r": "0x" + result.inputs[9],
                 "s": "0x" + result.inputs[10]
             }
-            result_insert = await new OraiEnventDB(data_insert).save()
+            result_insert = await OraiEnventDB.findOneAndUpdate({ tx_hash: tx }, data_insert, { new: true, upsert: true })
             console.log("record id method removeLiquidityWithPermit", result_insert._id);
             return
         }
@@ -180,7 +177,7 @@ async function analysis_transaction(tx, address) {
                 "r": "0x" + eth_network.get_lib_main_net().utils.bytesToHex(result.inputs[8]),
                 "s": "0x" + eth_network.get_lib_main_net().utils.bytesToHex(result.inputs[9])
             }
-            result_insert = await new OraiEnventDB(data_insert).save()
+            result_insert = await OraiEnventDB.findOneAndUpdate({ tx_hash: tx }, data_insert, { new: true, upsert: true })
             console.log("record id method removeLiquidityETHWithPermit", result_insert._id);
             return
         }
@@ -192,6 +189,6 @@ async function analysis_transaction(tx, address) {
 
 }
 
-// listenLog(ADDRESS_POOL)
+listenLog(ADDRESS_POOL)
 
-analysis_transaction("0xc2bb3e4fb02cace8b3b51a0eee56c20e08999e41ae75cfe64bd72b25cb896f1e", "test")
+// analysis_transaction("0x24aa86ea2293b03c130d96e61693de855e6ecc136e8f06eee14345545e81c7f9", "test")

@@ -5,7 +5,7 @@ const oraiEventSchema = new mongoose.Schema({
     from_address: String,
     to_address: String,
     addres_pool: String,
-    tx_hash: { type: String, unique: true, required: true },
+    tx_hash: { type: String, unique: true, required: true, dropDups: true },
     token: String,
     tokenA: String,
     tokenB: String,
