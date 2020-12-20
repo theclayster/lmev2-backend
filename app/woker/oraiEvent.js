@@ -7,7 +7,7 @@ const InputDataDecoder = require("ethereum-input-data-decoder");
 
 // *********************************************
 // Infomation config
-const ADDRESS_POOL = "0x9081b50bad8beefac48cc616694c26b027c559bb"
+const ADDRESS_POOL = "0xbb2b8038a1640196fbe3e38816f3e67cba72d940"
 // abi of contract pool
 const oraiPool = require("../blockchain/abi/orai_pool.json")
 // config mongo
@@ -26,11 +26,15 @@ async function listenLog(address) {
     }, async function (err, resp) {
         if (err) {
             console.log("this is log error of oraiEvent worker ", err);
+            return
         }
+        console.log(resp);
         try {
             analysis_transaction(resp.transactionHash, address)
+            return
         } catch (error) {
-            console.log("this is log error when analysis worker", error)
+            console.log("this is log error when listenLog worker", error)
+            return
         }
     })
 }
@@ -45,9 +49,11 @@ async function analysis_transaction(tx, address) {
         data = await eth_network.get_lib_main_net().eth.getTransaction(tx)
         input_data = data.input
 
-        result = decoder.decodeData(input_data)
-
+        result = await decoder.decodeData(input_data)
         if (result.method == "addLiquidity") {
+
+
+            get_tx_receipt = await eth_network.get_lib_main_net().eth.getTransactionReceipt(tx)
             data_insert = {
                 "method": result.method,
                 "block_number": data.blockNumber,
@@ -55,19 +61,24 @@ async function analysis_transaction(tx, address) {
                 "to_address": data.to.toLowerCase(),
                 "addres_pool": address,
                 "tx_hash": tx,
-                "tokenA": "0x" + result.inputs[0].toLowerCase(),
-                "tokennB": "0x" + result.inputs[1].toLowerCase(),
-                "amountADesired": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[2]),
-                "amountBDesired": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[3]),
-                "amountAMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[4]),
-                "amountBMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[5]),
-                "to": "0x" + result.inputs[6].toLowerCase(),
-                "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[7])
+                "tokenA": "0x" + result.inputs[0],
+                "tokenB": "0x" + result.inputs[1],
+                "amountADesired": result.inputs[2],
+                "amountBDesired": result.inputs[3],
+                "amountAMin": result.inputs[4],
+                "amountBMin": result.inputs[5],
+                "to": "0x" + result.inputs[6],
+                "deadline": result.inputs[7],
+                "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(get_tx_receipt.logs[3].data)
             }
             result_insert = await new OraiEnventDB(data_insert).save()
             console.log("record id method addLiquidity", result_insert._id);
+            return
+
         }
         if (result.method == "addLiquidityETH") {
+
+            get_tx_receipt = await eth_network.get_lib_main_net().eth.getTransactionReceipt(tx)
             data_insert = {
                 "method": result.method,
                 "block_number": data.blockNumber,
@@ -75,15 +86,17 @@ async function analysis_transaction(tx, address) {
                 "to_address": data.to.toLowerCase(),
                 "addres_pool": address,
                 "tx_hash": tx,
-                "token": "0x" + result.inputs[0].toLowerCase(),
-                "amountTokenDesired": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[1]),
-                "amountTokenMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[2]),
-                "amountETHMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[3]),
-                "to": "0x" + result.inputs[4].toLowerCase(),
-                "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[5])
+                "token": "0x" + result.inputs[0],
+                "amountTokenDesired": result.inputs[1],
+                "amountTokenMin": result.inputs[2],
+                "amountETHMin": result.inputs[3],
+                "to": "0x" + result.inputs[4],
+                "deadline": result.inputs[5],
+                "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(get_tx_receipt.logs[3].data)
             }
             result_insert = await new OraiEnventDB(data_insert).save()
             console.log("record id method addLiquidityETH", result_insert._id);
+            return
         }
         if (result.method == "removeLiquidityETH") {
             data_insert = {
@@ -93,15 +106,16 @@ async function analysis_transaction(tx, address) {
                 "to_address": data.to.toLowerCase(),
                 "addres_pool": address,
                 "tx_hash": tx,
-                "token": "0x" + result.inputs[0].toLowerCase(),
+                "token": "0x" + result.inputs[0],
                 "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[1]),
-                "amountTokenMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[2]),
-                "amountETHMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[3]),
-                "to": "0x" + result.inputs[4].toLowerCase(),
-                "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[5])
+                "amountTokenMin": result.inputs[2],
+                "amountETHMin": result.inputs[3],
+                "to": "0x" + result.inputs[4],
+                "deadline": result.inputs[5]
             }
             result_insert = await new OraiEnventDB(data_insert).save()
             console.log("record id method removeLiquidityETH", result_insert._id);
+            return
         }
         if (result.method == "removeLiquidity") {
             data_insert = {
@@ -111,16 +125,17 @@ async function analysis_transaction(tx, address) {
                 "to_address": data.to.toLowerCase(),
                 "addres_pool": address,
                 "tx_hash": tx,
-                "tokenA": "0x" + result.inputs[0].toLowerCase(),
-                "tokenB": "0x" + result.inputs[1].toLowerCase(),
-                "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[2]),
-                "amountAMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[3]),
-                "amountBMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[4]),
-                "to": "0x" + result.inputs[5].toLowerCase(),
-                "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[6])
+                "tokenA": "0x" + result.inputs[0],
+                "tokenB": "0x" + result.inputs[1],
+                "liquidity": result.inputs[2],
+                "amountAMin": result.inputs[3],
+                "amountBMin": result.inputs[4],
+                "to": "0x" + result.inputs[5],
+                "deadline": result.inputs[6]
             }
             result_insert = await new OraiEnventDB(data_insert).save()
             console.log("record id method removeLiquidity", result_insert._id);
+            return
         }
         if (result.method == "removeLiquidityWithPermit") {
             data_insert = {
@@ -130,20 +145,21 @@ async function analysis_transaction(tx, address) {
                 "to_address": data.to.toLowerCase(),
                 "addres_pool": address,
                 "tx_hash": tx,
-                "tokenA": "0x" + result.inputs[0].toLowerCase(),
-                "tokennB": "0x" + result.inputs[1].toLowerCase(),
-                "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[2]),
-                "amountAMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[3]),
-                "amountBMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[4]),
-                "to": "0x" + result.inputs[5].toLowerCase(),
-                "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[6]),
-                "approveMax": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[7]),
+                "tokenA": "0x" + result.inputs[0],
+                "tokenB": "0x" + result.inputs[1],
+                "liquidity": result.inputs[2],
+                "amountAMin": result.inputs[3],
+                "amountBMin": result.inputs[4],
+                "to": "0x" + result.inputs[5],
+                "deadline": result.inputs[6],
+                "approveMax": result.inputs[7],
                 "v": result.inputs[8],
-                "r": "0x" + eth_network.get_lib_main_net().utils.bytesToHex(result.inputs[9]),
-                "s": "0x" + eth_network.get_lib_main_net().utils.bytesToHex(result.inputs[10])
+                "r": "0x" + result.inputs[9],
+                "s": "0x" + result.inputs[10]
             }
             result_insert = await new OraiEnventDB(data_insert).save()
             console.log("record id method removeLiquidityWithPermit", result_insert._id);
+            return
         }
         if (result.method == "removeLiquidityETHWithPermit") {
             data_insert = {
@@ -153,11 +169,11 @@ async function analysis_transaction(tx, address) {
                 "to_address": data.to.toLowerCase(),
                 "addres_pool": address,
                 "tx_hash": tx,
-                "token": "0x" + result.inputs[0].toLowerCase(),
-                "liquidity": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[1]),
-                "amountTokenMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[2]),
-                "amountETHMin": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[3]),
-                "to": "0x" + result.inputs[4].toLowerCase(),
+                "token": "0x" + result.inputs[0],
+                "liquidity": result.inputs[1],
+                "amountTokenMin": result.inputs[2],
+                "amountETHMin": result.inputs[3],
+                "to": "0x" + result.inputs[4],
                 "deadline": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[5]),
                 "approveMax": eth_network.get_lib_main_net().utils.hexToNumberString(result.inputs[6]),
                 "v": result.inputs[7],
@@ -166,11 +182,16 @@ async function analysis_transaction(tx, address) {
             }
             result_insert = await new OraiEnventDB(data_insert).save()
             console.log("record id method removeLiquidityETHWithPermit", result_insert._id);
+            return
         }
+        return
     } catch (error) {
-        console.log("this is error when analysis_transaction ", error);
+        console.log("this is error when analysis_transaction ", tx, error);
+        return
     }
 
 }
 
-listenLog(ADDRESS_POOL)
+// listenLog(ADDRESS_POOL)
+
+analysis_transaction("0xc2bb3e4fb02cace8b3b51a0eee56c20e08999e41ae75cfe64bd72b25cb896f1e", "test")

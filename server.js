@@ -2,6 +2,7 @@ var express = require("express"),
     app = express();
 var session = require("express-session");
 var path = require("path");
+require('dotenv').config()
 var bodyParser = require("body-parser");
 var port = 9000;
 //mongo
