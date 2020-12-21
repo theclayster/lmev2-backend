@@ -14,13 +14,21 @@ mongoose.connect(dbConfig.dbs, {
     useNewUrlParser: true,
 });
 
-async function getAllTransaction(address_lock) {
+// address Lock
+ADDRESS_LOCK = ["0x17e00383a843a9922bca3b280c0ade9f8ba48449"]
 
+async function getAllTransaction(ADDRESS_LOCK) {
+    for (let i = 0; i < ADDRESS_LOCK.length; i++) {
+        insert_database(ADDRESS_LOCK[i])
+    }
+
+}
+
+async function insert_database(address_lock) {
     axios.get("https://api.etherscan.io/api?module=account&action=txlist&address=" +
         address_lock + "&startblock=" + 10503172 + "&endblock=99999999&sort=asc&apikey=PJZTHQZRS1MTRUHTUHVHVYKBYX1RQVGPXP")
         .then(async function (response) {
             data = response.data.result
-
             for (let i = 0; i < data.length; i++) {
 
                 try {
@@ -41,8 +49,8 @@ async function getAllTransaction(address_lock) {
                     continue
                 }
             }
-
-            var subscription = web3_socket.eth.subscribe('logs', {
+            console.log("Listen address lock ", address_lock);
+            network_eth.get_lib_main_net_socket().eth.subscribe('logs', {
                 address: address_lock,
             }, async function (err, result) {
 
@@ -58,4 +66,4 @@ async function getAllTransaction(address_lock) {
         });
 }
 
-getAllTransaction("0x17e00383a843a9922bca3b280c0ade9f8ba48449")
+getAllTransaction(ADDRESS_LOCK)
