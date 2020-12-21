@@ -18,14 +18,15 @@ module.exports = {
 
             myLiquidity = 0
             totalLiquidity = 0
-            console.log(get_all_account);
+
+
             for (let i = 0; i < get_all_account.length; i++) {
                 if (get_all_account[i].method == "removeLiquidityETHWithPermit" || get_all_account[i].method == "removeLiquidityWithPermit" || get_all_account[i].method == "removeLiquidity" || get_all_account[i].method == "removeLiquidityETH") {
-                    
-                    myLiquidity -= get_all_account[i].liquidity
+
+                    myLiquidity -= Number(get_all_account[i].liquidity)
                 }
                 if (get_all_account[i].method == "addLiquidityETH" || get_all_account[i].method == "addLiquidity") {
-                    myLiquidity += get_all_account[i].liquidity
+                    myLiquidity += Number(get_all_account[i].liquidity)
                 }
 
             }
@@ -34,10 +35,10 @@ module.exports = {
 
             for (let i = 0; i < get_all_address_pool.length; i++) {
                 if (get_all_address_pool[i].method == "removeLiquidityETHWithPermit" || get_all_address_pool[i].method == "removeLiquidityWithPermit" || get_all_address_pool[i].method == "removeLiquidity" || get_all_address_pool[i].method == "removeLiquidityETH") {
-                    totalLiquidity -= get_all_address_pool[i].liquidity
+                    totalLiquidity -= Number(get_all_address_pool[i].liquidity)
                 }
                 if (get_all_address_pool[i].method == "addLiquidityETH" || get_all_address_pool[i].method == "addLiquidity") {
-                    totalLiquidity += get_all_address_pool[i].liquidity
+                    totalLiquidity += Number(get_all_address_pool[i].liquidity)
                 }
 
             }
@@ -46,10 +47,14 @@ module.exports = {
                 return res.status(200).send({
                     status: 200, data: {
                         transaction: get_all_account
-                    }, myLiquidity, totalLiquidity: totalLiquidity
+                    }, myLiquidity, totalLiquidity
                 });
             } else {
-                return res.status(200).send({ status: 200, data: [] });
+                return res.status(200).send({
+                    status: 200, data: {
+                        transaction: []
+                    }, myLiquidity, totalLiquidity
+                });
             }
         } catch (error) {
             return res.status(200).send({ status: 500, error });
