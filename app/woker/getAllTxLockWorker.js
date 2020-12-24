@@ -5,7 +5,7 @@ const TransacionLockDB = require("../database/transacion_lock");
 const network_eth = require("../blockchain/network/eth")
 const mongoose = require("mongoose");
 const dbConfig = require("../database/db_config");
-
+const QUERY_TX  = require("../query_subgraph/get_tx")
 // init decode
 const decoder = new InputDataDecoder(lock1);
 

@@ -1,0 +1,96 @@
+module.exports = {
+  get_tx_mints: (account, pair, timestamp) => {
+    let QUERY_GET_PAIR_MINTS = `{
+      mints (
+        orderBy: timestamp
+        orderDirection: asc
+        where: {
+          timestamp_gte: ` + timestamp + `
+          to: "` + account + `"
+          pair: "` + pair + `"
+        }
+      ){
+        id
+        timestamp
+        transaction {
+          blockNumber
+        }
+        amount0
+        amount1
+        liquidity
+      }
+    }`
+
+    return QUERY_GET_PAIR_MINTS
+  },
+  get_tx_mints_of_pool: (pair, timestamp) => {
+    let QUERY_GET_PAIR_MINTS = `{
+      mints (
+        orderBy: timestamp
+        orderDirection: asc
+        where: {
+          timestamp_gte: ` + timestamp + `
+          pair: "` + pair + `"
+        }
+      ){
+        id
+        timestamp
+        transaction {
+          blockNumber
+        }
+        amount0
+        amount1
+        liquidity
+      }
+    }`
+
+    return QUERY_GET_PAIR_MINTS
+  },
+  get_tx_burn: (account, pair, timestamp) => {
+    let QUERY_GET_PAIR_BURN = `{
+      burns(
+        orderBy: timestamp
+        orderDirection:  asc
+        where : {
+          timestamp_gte: ` + timestamp + `
+          sender: "` + account + `"
+          pair: "` + pair + `"
+        }
+      ){
+        id
+        timestamp
+        transaction {
+          blockNumber
+        }
+        amount0
+        amount1
+        liquidity
+      }
+    }`
+
+    return QUERY_GET_PAIR_BURN
+  },
+  get_tx_burn_of_pool: (pair, timestamp) => {
+    let QUERY_GET_PAIR_BURN = `{
+      burns(
+        orderBy: timestamp
+        orderDirection:  asc
+        where : {
+          timestamp_gte: ` + timestamp + `
+          pair: "` + pair + `"
+        }
+      ){
+        id
+        timestamp
+        transaction {
+          blockNumber
+        }
+        amount0
+        amount1
+        liquidity
+      }
+    }`
+
+    return QUERY_GET_PAIR_BURN
+  }
+}

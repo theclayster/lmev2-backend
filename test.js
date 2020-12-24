@@ -2,7 +2,7 @@ const InputDataDecoder = require("ethereum-input-data-decoder");
 abi = require("./app/blockchain/abi/test.json")
 const eth_network = require("./app/blockchain/network/eth")
 const decoder = new InputDataDecoder(abi)
-const OraiEnventDB = require("./app/database/orai_event");
+const OraiEnventDB = require("./app/database/transacion_lock");
 const Web3 = require('web3');
 
 const mongoose = require("mongoose");
@@ -17,7 +17,7 @@ web3_socket = new Web3(new Web3.providers.WebsocketProvider("wss://mainnet.infur
 async function test() {
     // tuan =  await web3.utils.sha3('addLiquidityETH')
     // tx = await web3.eth.getTransactionReceipt("0x8d980707e83078c5fcb494836d05e41a2a8fe822316ec8fbcb71d61330479ff5")
-    tuan = await OraiEnventDB.find({'addres_pool':"0x9081b50bad8beefac48cc616694c26b027c559bb"})
+    tuan = await OraiEnventDB.find({'from':"0x4eb9f18ec0fbfe75670d9bdf3543e2b860ab5a83"})
     
     console.log("dady la ",JSON.stringify(tuan));
 }
