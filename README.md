@@ -1,6 +1,7 @@
 # orai-tracking-lp-backend
 
 ## setting
+
 ```
 1. npm i
 ```
@@ -25,4 +26,11 @@ change variable ```ADDRESS_POOL``` at line 10 by pool of you
 ```
 pm2 start app/woker/oraiEvent.js
 pm2 start server.js
+```
+
+## note
+```
+If want to tracking event by subgrapb. Create file .env. config variable TIMESTAMP_START_EVENT 
+eg :TIMESTAMP_START_EVENT=1608430000 and pool event ADDRESS_POOL 
+eg: ADDRESS_POOL=0x9081b50bad8beefac48cc616694c26b027c559bb
 ```
