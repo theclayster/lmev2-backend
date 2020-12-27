@@ -2,7 +2,6 @@ const { validationResult, check, query } = require("express-validator");
 const OraiEnventDB = require("../database/orai_event");
 const QUERY_TX = require("../query_subgraph/get_tx")
 const { get } = require("../router");
-const axios = require('axios');
 const Platform = require('../platform/index')
 const requestPromise = require('request-promise');
 require('dotenv').config()
