@@ -120,7 +120,7 @@ module.exports = {
           totalBronze,
           totalSilver,
           totalGold,
-          totalPlatinum,,
+          totalPlatinum,
         });
       }
 
