@@ -50,14 +50,63 @@ module.exports = {
 
       account = req.params.account;
 
-      totalLiquidity = 0;
+      totalBronze = 0;
+      totalSilver = 0;
+      totalGold = 0;
+      totalPlatinum = 0;
       data_db = await UniswapDB.find({ address: account });
       for (let i = 0; i < data_db.length; i++) {
-        if (data_db[i].type == "addLiquidity") {
-          totalLiquidity += Number(data_db[i].amount);
+        // totalBronze-----------
+        if (
+          data_db[i].type == "addLiquidity" &&
+          data_db[i].vault == Commom.vault.bronze
+        ) {
+          totalBronze += Number(data_db[i].amount);
         }
-        if (data_db[i].type == "removeLiquidity") {
-          totalLiquidity -= Number(data_db[i].amount);
+        if (
+          data_db[i].type == "removeLiquidity" &&
+          data_db[i].vault == Commom.vault.bronze
+        ) {
+          totalBronze -= Number(data_db[i].amount);
+        }
+        // totalSilver-----------
+        if (
+          data_db[i].type == "addLiquidity" &&
+          data_db[i].vault == Commom.vault.silver
+        ) {
+          totalSilver += Number(data_db[i].amount);
+        }
+        if (
+          data_db[i].type == "removeLiquidity" &&
+          data_db[i].vault == Commom.vault.silver
+        ) {
+          totalSilver -= Number(data_db[i].amount);
+        }
+        // totalGold----------
+        if (
+          data_db[i].type == "addLiquidity" &&
+          data_db[i].vault == Commom.vault.gold
+        ) {
+          totalGold += Number(data_db[i].amount);
+        }
+        if (
+          data_db[i].type == "removeLiquidity" &&
+          data_db[i].vault == Commom.vault.gold
+        ) {
+          totalGold -= Number(data_db[i].amount);
+        }
+        // totalPlatinum----------------
+        if (
+          data_db[i].type == "addLiquidity" &&
+          data_db[i].vault == Commom.vault.platinum
+        ) {
+          totalPlatinum += Number(data_db[i].amount);
+        }
+        if (
+          data_db[i].type == "removeLiquidity" &&
+          data_db[i].vault == Commom.vault.platinum
+        ) {
+          totalPlatinum -= Number(data_db[i].amount);
         }
       }
 
@@ -73,14 +122,64 @@ module.exports = {
       }
 
       transaction = [];
-      myLiquidity = 0;
+      myBronze = 0;
+      mySilver = 0;
+      myGold = 0;
+      myPlatinum = 0;
       for (let i = 0; i < data.length; i++) {
-        if (data[i].type == "addLiquidity") {
-          myLiquidity += Number(data[i].amount);
+        // myBronze-----------------
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.bronze
+        ) {
+          myBronze += Number(data[i].amount);
         }
-        if (data[i].type == "removeLiquidity") {
-          myLiquidity -= Number(data[i].amount);
+        if (
+          data[i].type == "removeLiquidity" &&
+          data[i].vault == Commom.vault.bronze
+        ) {
+          myBronze -= Number(data[i].amount);
         }
+        // mySilver--------
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.silver
+        ) {
+          mySilver += Number(data[i].amount);
+        }
+        if (
+          data[i].type == "removeLiquidity" &&
+          data[i].vault == Commom.vault.silver
+        ) {
+          mySilver -= Number(data[i].amount);
+        }
+        //myGold--------
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.gold
+        ) {
+          myGold += Number(data[i].amount);
+        }
+        if (
+          data[i].type == "removeLiquidity" &&
+          data[i].vault == Commom.vault.gold
+        ) {
+          myGold -= Number(data[i].amount);
+        }
+        //myPlatinum--------
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.platinum
+        ) {
+          myPlatinum += Number(data[i].amount);
+        }
+        if (
+          data[i].type == "removeLiquidity" &&
+          data[i].vault == Commom.vault.platinum
+        ) {
+          myPlatinum -= Number(data[i].amount);
+        }
+
         transaction.push(data[i]);
       }
 
@@ -89,8 +188,14 @@ module.exports = {
         data: {
           transaction,
         },
-        totalLiquidity,
-        myLiquidity,
+        totalBronze,
+        totalSilver,
+        totalGold,
+        totalPlatinum,
+        myBronze,
+        mySilver,
+        myGold,
+        myPlatinum,
       });
     } catch (error) {
       return res.status(200).send({ status: 500, error });
