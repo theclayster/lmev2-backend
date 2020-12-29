@@ -117,7 +117,10 @@ module.exports = {
           data: {
             transaction: [],
           },
-          totalLiquidity,
+          totalBronze,
+          totalSilver,
+          totalGold,
+          totalPlatinum,,
         });
       }
 
