@@ -34,3 +34,11 @@ If want to tracking event by subgrapb. Create file .env. config variable TIMESTA
 eg :TIMESTAMP_START_EVENT=1608430000 and pool event ADDRESS_POOL 
 eg: ADDRESS_POOL=0x9081b50bad8beefac48cc616694c26b027c559bb
 ```
+
+## env 
+```
+ACCESS_TOKEN_SECRET=orai
+ACCESS_TOKEN_LIFE_RESET_PASSWORD=3h
+TIMESTAMP_START_EVENT=
+ADDRESS_POOL=
+```
