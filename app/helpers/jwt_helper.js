@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 let generateToken = (userData, secretSignature, tokenLife) => {
   return new Promise((resolve, reject) => {
@@ -6,7 +7,7 @@ let generateToken = (userData, secretSignature, tokenLife) => {
       { data: userData },
       secretSignature,
       {
-        algorithm: "HS256",
+        algorithm: process.env.ALGORITHM_JWT,
         expiresIn: tokenLife,
       },
       (error, token) => {
