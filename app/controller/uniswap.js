@@ -117,10 +117,10 @@ module.exports = {
           data: {
             transaction: [],
           },
-          totalBronze,
-          totalSilver,
-          totalGold,
-          totalPlatinum,
+          totalBronze: totalBronze.toString(),
+          totalSilver: totalSilver.toString(),
+          totalGold: totalGold.toString(),
+          totalPlatinum: totalPlatinum.toString(),
         });
       }
 
@@ -191,14 +191,14 @@ module.exports = {
         data: {
           transaction,
         },
-        totalBronze,
-        totalSilver,
-        totalGold,
-        totalPlatinum,
-        myBronze,
-        mySilver,
-        myGold,
-        myPlatinum,
+        totalBronze: totalBronze.toString(),
+        totalSilver: totalSilver.toString(),
+        totalGold: totalGold.toString(),
+        totalPlatinum: totalPlatinum.toString(),
+        myBronze: myBronze.toString(),
+        mySilver: mySilver.toString(),
+        myGold: myGold.toString(),
+        myPlatinum: myPlatinum.toString(),
       });
     } catch (error) {
       return res.status(200).send({ status: 500, error });
