@@ -55,6 +55,7 @@ module.exports = {
       totalGold = 0;
       totalPlatinum = 0;
       data_db = await UniswapDB.find({ address: account });
+
       for (let i = 0; i < data_db.length; i++) {
         // totalBronze-----------
         if (
@@ -100,6 +101,7 @@ module.exports = {
           data_db[i].type == "addLiquidity" &&
           data_db[i].vault == Commom.vault.platinum
         ) {
+
           totalPlatinum += Number(data_db[i].amount);
         }
         if (
@@ -110,7 +112,8 @@ module.exports = {
         }
       }
 
-      data = await UniswapDB.find({ address: account });
+      data = await UniswapDB.find({ address: account }).sort({"updateAt": -1});
+      
       if (!data) {
         return res.status(200).send({
           status: 200,
