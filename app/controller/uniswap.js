@@ -54,8 +54,9 @@ module.exports = {
       totalSilver = 0;
       totalGold = 0;
       totalPlatinum = 0;
-      data_db = await UniswapDB.find({ address: account });
-
+      data_db = await UniswapDB.find({ });
+      // full_db = await UniswapDB.find({  });
+      // console.log(data_db)
       for (let i = 0; i < data_db.length; i++) {
         // totalBronze-----------
         if (
