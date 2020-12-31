@@ -7,13 +7,12 @@ const Platform = require("../platform/index");
 const web3 = network_eth.get_lib_main_net();
 
 const mongoose = require("mongoose");
-const get_tx = require("../query_subgraph/get_tx");
-
 // config mongo
 mongoose.connect(dbConfig.dbs, {
   useNewUrlParser: true,
 });
 
+// config -----------------------------------
 const TIME_STAMP_START = 1608430000;
 const ADDRESS_POOL = "0x9081b50bad8beefac48cc616694c26b027c559bb";
 
