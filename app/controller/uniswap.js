@@ -54,7 +54,7 @@ module.exports = {
       totalSilver = 0;
       totalGold = 0;
       totalPlatinum = 0;
-      data_db = await UniswapDB.find({ });
+      data_db = await UniswapDB.find({});
       // full_db = await UniswapDB.find({  });
       // console.log(data_db)
       for (let i = 0; i < data_db.length; i++) {
@@ -102,7 +102,6 @@ module.exports = {
           data_db[i].type == "addLiquidity" &&
           data_db[i].vault == Commom.vault.platinum
         ) {
-
           totalPlatinum += Number(data_db[i].amount);
         }
         if (
@@ -113,8 +112,8 @@ module.exports = {
         }
       }
 
-      data = await UniswapDB.find({ address: account }).sort({"updateAt": -1});
-      
+      data = await UniswapDB.find({ address: account }).sort({ updateAt: -1 });
+
       if (!data) {
         return res.status(200).send({
           status: 200,
@@ -160,7 +159,7 @@ module.exports = {
         ) {
           mySilver -= Number(data[i].amount);
         }
-        //myGold--------
+        //myGold---------
         if (
           data[i].type == "addLiquidity" &&
           data[i].vault == Commom.vault.gold
@@ -187,7 +186,18 @@ module.exports = {
           myPlatinum -= Number(data[i].amount);
         }
 
-        transaction.push(data[i]);
+        let object = {
+          _id: data[i]._id,
+          type: data[i].type,
+          address: data[i].address,
+          amount: data[i].amount,
+          vault: data[i].vault,
+          tx_id: data[i].tx_id,
+          createAt: Date.parse(data[i].createAt) / 1000,
+          updateAt: Date.parse(data[i].updateAt) / 1000,
+        };
+
+        transaction.push(object);
       }
 
       return res.status(200).send({
