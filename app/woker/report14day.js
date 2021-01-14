@@ -52,6 +52,8 @@ async function report14day(address_pool) {
   });
 
   total_after_rm = [];
+  list_address = [];
+  list_amount_percent = [];
   for (let i = 0; i < total_add_of_account.length; i++) {
     amount = total_add_of_account[i].amount;
     for (let j = 0; j < get_tx_rmLp.length; j++) {
@@ -59,20 +61,37 @@ async function report14day(address_pool) {
         amount -= Number(get_tx_rmLp[j].amount);
       }
     }
-    amount = (amount * 2 * 175 * 14) / (365 * 100 * 7);
+    amount_percent = (amount * 2 * 175 * 14) / (365 * 100 * 7);
+    list_address.push(total_add_of_account[i].address);
+    list_amount_percent.push(amount_percent);
     total_after_rm.push({
       address: total_add_of_account[i].address,
       amount: amount,
+      amount_percent: amount_percent,
     });
   }
 
+  object = {
+    list_address,
+    list_amount_percent,
+  };
+
   fs.writeFile(
-    "report_tx_14day.json",
+    "report_tx_14day_v1.json",
     JSON.stringify(total_after_rm),
     "utf8",
     function (err) {
       if (err) throw err;
-      else console.log("Ghi file report_tx_14day thanh cong!");
+      else console.log("Ghi file report_tx_14day_v1 thanh cong!");
+    }
+  );
+  fs.writeFile(
+    "report_tx_14day_v2.json",
+    JSON.stringify(object),
+    "utf8",
+    function (err) {
+      if (err) throw err;
+      else console.log("Ghi file report_tx_14day_v2 thanh cong!");
     }
   );
 }
