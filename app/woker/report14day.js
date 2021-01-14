@@ -94,7 +94,7 @@ async function report14day(address_pool) {
     if (amount > 0.1) {
       amount_percent = (amount * 2 * 175 * 14) / (365 * 100 * 7);
       list_address.push(total_add_of_account[i].address);
-      reward_amound.push(amount_percent);
+      reward_amound.push(Math.round(amount_percent * 1000) / 1000);
       total_after_rm.push({
         address: total_add_of_account[i].address,
         amount: amount,
