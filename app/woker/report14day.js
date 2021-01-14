@@ -1,7 +1,8 @@
 const UniswapDB = require("../database/uniswap");
-const dbConfig = "mongodb://127.0.0.1:27017/orai";
+const dbConfig = require("../database/db_config").db_connect_14_day;
 var fs = require("fs");
-
+const eth_network = require("../blockchain/network/eth");
+const web3 = eth_network.get_lib_main_net();
 const mongoose = require("mongoose");
 // config mongo
 mongoose.connect(dbConfig, {
@@ -38,14 +39,22 @@ async function report14day(address_pool) {
     amount = 0;
     for (let j = 0; j < get_tx_addLp.length; j++) {
       if (list_account[i] == get_tx_addLp[j].address) {
-        amount += Number(get_tx_addLp[j].amount);
+        get_tx_receipt = await web3.eth.getTransactionReceipt(
+          get_tx_addLp[i].tx_id
+        );
+
+        amount_orai = eth_network
+          .get_lib_main_net()
+          .utils.hexToNumberString(get_tx_receipt.logs[3].data);
+        amount += Number(amount_orai);
       }
     }
     total_add_of_account.push({
       address: list_account[i],
-      amount: amount,
+      amount: amount / Math.pow(10, 18),
     });
   }
+
   // get tx remove last -> now
   get_tx_rmLp = await UniswapDB.find({
     type: "removeLiquidity",
@@ -61,14 +70,20 @@ async function report14day(address_pool) {
         amount -= Number(get_tx_rmLp[j].amount);
       }
     }
-    amount_percent = (amount * 2 * 175 * 14) / (365 * 100 * 7);
-    list_address.push(total_add_of_account[i].address);
-    list_amount_percent.push(amount_percent);
-    total_after_rm.push({
-      address: total_add_of_account[i].address,
-      amount: amount,
-      amount_percent: amount_percent,
-    });
+
+    if (amount > 0.1) {
+      amount_percent = (amount * 2 * 175 * 14) / (365 * 100 * 7);
+      list_address.push(total_add_of_account[i].address);
+      list_amount_percent.push({
+        amount,
+        amount_percent,
+      });
+      total_after_rm.push({
+        address: total_add_of_account[i].address,
+        amount: amount,
+        amount_percent: amount_percent,
+      });
+    }
   }
 
   object = {
