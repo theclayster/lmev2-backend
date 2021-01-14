@@ -24,17 +24,17 @@ web3_socket = new Web3(
 
 async function test() {
 //   tuan =  await web3.utils.sha3('addLiquidityETH')
-//   tx = await web3.eth.getTransactionReceipt("0x8186f263aa82bf94836f6ecf2203f5101748e72e12b1120cd971f73613e4a0a1")
+  // tx = await web3.eth.getTransactionReceipt("0xca781dd5a7762467a374e79b4e69b1f9ee5c1849a8a01d938c6f580022928abc")
   tuan = await UniswapDB.find({
-    tx_id: "0x100ab2869257808abf5e8bec927abe8e7f275670b727f4a7c4b9c6fe368dd12f",
+    address: "0xdd95b836ee6b4d879ff132617878c06707f37df5",
   });
 
   console.log("dady la ", JSON.stringify(tuan));
 }
-a = 0.0006207176782038193
-b = (a*2*175*14)/(365*100*7)
-console.log(b);
-// test()
+// a = 0.0006207176782038193
+// b = (a*2*175*14)/(365*100*7)
+// console.log(b);
+test()
 // tuan = Math.round(new Date("2020-12-30T19:56:11.742+00:00") / 1000);
 // // /1609354258
 // console.log(tuan);

@@ -45,7 +45,7 @@ async function report14day(address_pool) {
 
         amount_orai = eth_network
           .get_lib_main_net()
-          .utils.hexToNumberString(get_tx_receipt.logs[3].data);
+          .utils.hexToNumberString(get_tx_receipt.logs[0].data);
         amount += Number(amount_orai);
       }
     }
