@@ -14,6 +14,10 @@ const ADDRESS_POOL = "0x9081b50bad8beefac48cc616694c26b027c559bb";
 const TIME_APPROXX = 1209600; // 14 ngay
 
 async function report14day(address_pool) {
+  console.log(
+    "------------------------------run------------------------------"
+  );
+  
   time_now = Math.floor(Date.now() / 1000);
 
   time_before = new Date((time_now - TIME_APPROXX) * 1000);
@@ -33,22 +37,27 @@ async function report14day(address_pool) {
       list_account.push(get_tx_addLp[i].address);
     }
   }
+
   //tinh tổng addLp của từng account
   total_add_of_account = [];
+
   for (let i = 0; i < list_account.length; i++) {
     amount = 0;
     for (let j = 0; j < get_tx_addLp.length; j++) {
+      amount_orai = 0;
       if (list_account[i] == get_tx_addLp[j].address) {
         get_tx_receipt = await web3.eth.getTransactionReceipt(
-          get_tx_addLp[i].tx_id
+          get_tx_addLp[j].tx_id
         );
 
-        amount_orai = eth_network
-          .get_lib_main_net()
-          .utils.hexToNumberString(get_tx_receipt.logs[0].data);
+        amount_orai = await web3.utils.hexToNumberString(
+          get_tx_receipt.logs[0].data
+        );
+
         amount += Number(amount_orai);
       }
     }
+
     total_add_of_account.push({
       address: list_account[i],
       amount: amount / Math.pow(10, 18),
@@ -63,11 +72,20 @@ async function report14day(address_pool) {
   total_after_rm = [];
   list_address = [];
   list_amount_percent = [];
+
   for (let i = 0; i < total_add_of_account.length; i++) {
     amount = total_add_of_account[i].amount;
     for (let j = 0; j < get_tx_rmLp.length; j++) {
       if (total_add_of_account[i].address == get_tx_rmLp[j].address) {
-        amount -= Number(get_tx_rmLp[j].amount);
+        get_tx_receipt = await web3.eth.getTransactionReceipt(
+          get_tx_rmLp[j].tx_id
+        );
+
+        amount_orai_rm_lp = await eth_network
+          .get_lib_main_net()
+          .utils.hexToNumberString(get_tx_receipt.logs[3].data);
+
+        amount -= Number(amount_orai_rm_lp) / Math.pow(10, 18);
       }
     }
 
