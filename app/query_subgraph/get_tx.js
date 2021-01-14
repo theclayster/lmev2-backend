@@ -109,6 +109,7 @@ module.exports = {
         id
         timestamp
         transaction {
+          timestamp
           blockNumber
         }
         amount0
