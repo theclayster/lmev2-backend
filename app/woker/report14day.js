@@ -17,7 +17,7 @@ async function report14day(address_pool) {
   console.log(
     "------------------------------run------------------------------"
   );
-  
+
   time_now = Math.floor(Date.now() / 1000);
 
   time_before = new Date((time_now - TIME_APPROXX) * 1000);
@@ -25,6 +25,7 @@ async function report14day(address_pool) {
   // lấy tx addLp trong db có thời gian là 14 day
   get_tx_addLp = await UniswapDB.find({
     type: "addLiquidity",
+    vault: "gold",
     createAt: {
       $lt: time_before,
     },
@@ -67,6 +68,7 @@ async function report14day(address_pool) {
   // get tx remove last -> now
   get_tx_rmLp = await UniswapDB.find({
     type: "removeLiquidity",
+    vault: "gold",
   });
 
   total_after_rm = [];
@@ -81,9 +83,9 @@ async function report14day(address_pool) {
           get_tx_rmLp[j].tx_id
         );
 
-        amount_orai_rm_lp = await eth_network
-          .get_lib_main_net()
-          .utils.hexToNumberString(get_tx_receipt.logs[3].data);
+        amount_orai_rm_lp = await web3.utils.hexToNumberString(
+          get_tx_receipt.logs[3].data
+        );
 
         amount -= Number(amount_orai_rm_lp) / Math.pow(10, 18);
       }
