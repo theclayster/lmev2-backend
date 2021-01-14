@@ -73,7 +73,7 @@ async function report14day(address_pool) {
 
   total_after_rm = [];
   list_address = [];
-  list_amount_percent = [];
+  reward_amound = [];
 
   for (let i = 0; i < total_add_of_account.length; i++) {
     amount = total_add_of_account[i].amount;
@@ -94,18 +94,18 @@ async function report14day(address_pool) {
     if (amount > 0.1) {
       amount_percent = (amount * 2 * 175 * 14) / (365 * 100 * 7);
       list_address.push(total_add_of_account[i].address);
-      list_amount_percent.push(amount);
+      reward_amound.push(amount_percent);
       total_after_rm.push({
         address: total_add_of_account[i].address,
         amount: amount,
-        amount_percent: amount_percent,
+        reward_amound: amount_percent,
       });
     }
   }
 
   object = {
     list_address,
-    list_amount_percent,
+    reward_amound,
   };
 
   fs.writeFile(
