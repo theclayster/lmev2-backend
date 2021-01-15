@@ -80,7 +80,7 @@ async function report14day(address_pool) {
   }
 
   fs.writeFile(
-    "report_tx_not_exists_on_network.json",
+    "./report14day/report_tx_not_exists_on_network.json",
     JSON.stringify(tx_drop),
     "utf8",
     function (err) {
@@ -146,7 +146,7 @@ async function report14day(address_pool) {
   }
 
   fs.writeFile(
-    "report_tx_omitted.json",
+    "./report14day/report_tx_omitted.json",
     JSON.stringify(list_tx_omitted),
     "utf8",
     function (err) {
@@ -246,7 +246,7 @@ async function report14day(address_pool) {
   };
 
   fs.writeFile(
-    "report_tx_14day_v1.json",
+    "./report14day/report_tx_14day_v1.json",
     JSON.stringify(total_after_rm),
     "utf8",
     function (err) {
@@ -255,7 +255,7 @@ async function report14day(address_pool) {
     }
   );
   fs.writeFile(
-    "report_tx_14day_v2.json",
+    "./report14day/report_tx_14day_v2.json",
     JSON.stringify(object),
     "utf8",
     function (err) {
