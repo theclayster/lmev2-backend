@@ -1,5 +1,5 @@
 const UniswapDB = require("../database/uniswap");
-const dbConfig = require("../database/db_config").dbs;
+const dbConfig = require("../database/db_config").db_14_day;
 const QUERY_TX = require("../query_subgraph/get_tx");
 const requestPromise = require("request-promise");
 const Platform = require("../platform/index");
