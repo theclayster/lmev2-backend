@@ -7,6 +7,7 @@ const Web3 = require("web3");
 const UniswapDB = require("./app/database/uniswap");
 const mongoose = require("mongoose");
 const dbConfig = require("./app/database/db_config");
+const LockRewardDB = require("./app/database/lock_reward");
 // config mongo
 mongoose.connect(dbConfig.dbs, {
   useNewUrlParser: true,
@@ -25,9 +26,10 @@ web3_socket = new Web3(
 async function test() {
 //   tuan =  await web3.utils.sha3('addLiquidityETH')
   // tx = await web3.eth.getTransactionReceipt("0xca781dd5a7762467a374e79b4e69b1f9ee5c1849a8a01d938c6f580022928abc")
-  tuan = await UniswapDB.find({
-    address: "0xdd95b836ee6b4d879ff132617878c06707f37df5",
-  });
+  // tuan = await LockRewardDB.find({
+  //   address: "0xf1f7d2cf581b5d2327e438c076d85cf18c3d1a3d",
+  // });
+  tuan = await LockRewardDB.findById("5ff5a605fb171d1d1623e1c8");
 
   console.log("dady la ", JSON.stringify(tuan));
 }

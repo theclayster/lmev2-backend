@@ -49,3 +49,17 @@ ADDRESS_POOL=
 tại dòng 15. Config 2 giá trị đầu tiền là thời gian sẽ check toàn bộ tx remove trên eth và address pool mà mình muốn check
 const TIME_STAMP_START = 1608430000;
 const ADDRESS_POOL = "0x9081b50bad8beefac48cc616694c26b027c559bb";
+
+## run worker report 14 day
+
+trong file /app/database/db_config.js 
+tạo biến db_14_day = "url", cẩn thận là database test hơn là live.
+chạy node report14day.js
+sau khi chạy xong backup db sẽ được lưu vào ./backupDB
+các file report sẽ được lưu ./report14day
+
+## run worker claim
+trong file /app/database/db_config.js 
+tạo biến db_claim = "url", cẩn thận là database test hơn là live.
+trong ./worker_config/claimWorker.js điền block number bắt đầu. Hiện tại block number lên là 11620095
+chạy node claimWorker.js
