@@ -66,7 +66,6 @@ async function report14day(address_pool) {
     time_7day_before = new Date(TIME_CHANGE_PERCENT * 1000);
   }
 
-  console.log("time_7day_before", time_7day_before);
   // lấy tx addLp trong db có thời gian là 14 day
   get_tx_addLp = await UniswapDB.find({
     type: "addLiquidity",
@@ -281,7 +280,7 @@ async function get_tx_before_16(time_22_stamp) {
 }
 
 async function check_database() {
-  //   //   Bắt đầu backupdb
+  //   Bắt đầu backupdb
   get_all_tx = await UniswapDB.find();
   data_mongo = [];
   for (let i = 0; i < get_all_tx.length; i++) {
@@ -306,8 +305,25 @@ async function check_database() {
   console.log(
     "----------------------------BackUp database----------------------------"
   );
+
+  var unixTimestamp = new Date(time_now * 1000);
+
+  time_file =
+    unixTimestamp.getDate().toString() +
+    "_" +
+    (unixTimestamp.getMonth() + 1).toString() +
+    "_" +
+    unixTimestamp.getFullYear().toString() +
+    "_" +
+    unixTimestamp.getHours().toString() +
+    "h_" +
+    unixTimestamp.getMinutes().toString() +
+    "m_" +
+    unixTimestamp.getSeconds().toString() +
+    "s";
+
   fs.appendFile(
-    `./backupdb/` + process.argv[2] + time_now + `.json`,
+    `./backupdb/` + process.argv[2] + time_file + `.json`,
     JSON.stringify({
       data_mongo,
     }),
@@ -324,19 +340,19 @@ async function check_database() {
   tx_drop = [];
   for (let i = 0; i < get_all_tx.length; i++) {
     try {
-      console.log(i);
+      console.log("check record number on network eth = ", i);
       get_tx_receipt = await web3.eth.getTransactionReceipt(
         get_all_tx[i].tx_id
       );
       if (!get_tx_receipt) {
         tx_drop.push(get_all_tx[i].tx_id);
         await UniswapDB.deleteOne({ tx_id: get_all_tx[i].tx_id });
-        console.log("Tx drop ", get_all_tx[i].tx_id);
+        console.log("Tx has been drop on network", get_all_tx[i].tx_id);
       }
     } catch (error) {
       tx_drop.push(get_all_tx[i].tx_id);
       await UniswapDB.deleteOne({ tx_id: get_all_tx[i].tx_id });
-      console.log("Tx drop ", get_all_tx[i].tx_id);
+      console.log("Tx has been drop on network ", get_all_tx[i].tx_id);
     }
   }
 
@@ -402,7 +418,10 @@ async function check_database() {
       );
 
       console.log(
-        "day la tx sot " + tx_hash + " insert database _id = " + insertDb._id
+        "This is tx remove not exist in database " +
+          tx_hash +
+          " insert database have _id = " +
+          insertDb._id
       );
     }
   }
