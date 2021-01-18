@@ -24,20 +24,20 @@ web3_socket = new Web3(
 );
 
 async function test() {
-//   tuan =  await web3.utils.sha3('addLiquidityETH')
-  tx = await web3.eth.getTransactionReceipt("0xc3c115d32c2d6734a6d690789af8c694cba7401152c6234d4fabb1023797982f")
-  // tuan = await UniswapDB.find({
-  //   // tx_id :"0xd693a761e85767c7e0e6a2c0379dce055d78c8d86ff22971225ac56bff6a1734"
-  //   address: "0x14fca733f9283caaa6d0f2294239ff379b29fd0a",
-  // });
+  //   tuan =  await web3.utils.sha3('addLiquidityETH')
+  // tx = await web3.eth.getTransactionReceipt("0xc3c115d32c2d6734a6d690789af8c694cba7401152c6234d4fabb1023797982f")
+  tuan = await UniswapDB.find({
+    // tx_id :"0xd693a761e85767c7e0e6a2c0379dce055d78c8d86ff22971225ac56bff6a1734"
+    address: "0xe29304f861d38cee951770cb5a23ac3cced3fbae",
+  });
   // // tuan = await LockRewardDB.findById("5ff5a605fb171d1d1623e1c8");
 
-  console.log("dady la ", JSON.stringify(tx));
+  console.log("dady la ", JSON.stringify(tuan));
 }
 // a = 0.0006207176782038193
 // b = (a*2*175*14)/(365*100*7)
 // console.log(b);
-test()
+test();
 // var unixTimestamp = new Date((1611280800) * 1000);
 // console.log(unixTimestamp);
 

@@ -29,7 +29,7 @@ module.exports = {
 
       data = await new UniswapDB({
         type: type,
-        address: address,
+        address: address.toLowerCase(),
         amount: amount,
         vault: vault,
         tx_id: tx_id,
@@ -112,7 +112,9 @@ module.exports = {
         }
       }
 
-      data = await UniswapDB.find({ address: account }).sort({ updateAt: -1 });
+      data = await UniswapDB.find({ address: account.toLowerCase() }).sort({
+        updateAt: -1,
+      });
 
       if (!data) {
         return res.status(200).send({

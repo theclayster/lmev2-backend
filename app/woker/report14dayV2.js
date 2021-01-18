@@ -15,7 +15,7 @@ mongoose.connect(dbConfig, {
 // config -----------------------------------
 const ADDRESS_POOL = "0x9081b50bad8beefac48cc616694c26b027c559bb";
 const TIME_STAMP_START = 1609354256; // thứ năm, 31 tháng 12 năm 2020 01:50:56
-const VAULT = "gold";
+const VAULT = "platinum";
 const TIME_CHANGE_PERCENT = 1610762400;
 
 async function report14day(address_pool) {
@@ -45,13 +45,13 @@ async function report14day(address_pool) {
     return;
   }
 
-  check_and_clean_db = await check_database();
-  if (check_and_clean_db != true) {
-    console.log(
-      "----------------------------check and backup error----------------------------"
-    );
-    return;
-  }
+    check_and_clean_db = await check_database();
+    if (check_and_clean_db != true) {
+      console.log(
+        "----------------------------check and backup error----------------------------"
+      );
+      return;
+    }
 
   console.log("Run reward");
   // Công thức trừ time tịnh tiến như thế này.
@@ -215,12 +215,13 @@ async function get_tx_before_16(time_22_stamp) {
         get_tx_receipt = await web3.eth.getTransactionReceipt(
           get_tx_addLp[j].tx_id
         );
+        if (get_tx_receipt && get_tx_receipt.logs.length != 0) {
+          amount_orai = await web3.utils.hexToNumberString(
+            get_tx_receipt.logs[0].data
+          );
 
-        amount_orai = await web3.utils.hexToNumberString(
-          get_tx_receipt.logs[0].data
-        );
-
-        amount += Number(amount_orai);
+          amount += Number(amount_orai);
+        }
       }
     }
 
@@ -252,11 +253,13 @@ async function get_tx_before_16(time_22_stamp) {
           get_tx_rmLp[j].tx_id
         );
 
-        amount_orai_rm_lp = await web3.utils.hexToNumberString(
-          get_tx_receipt.logs[3].data
-        );
+        if (get_tx_receipt && get_tx_receipt.logs.length != 0) {
+          amount_orai_rm_lp = await web3.utils.hexToNumberString(
+            get_tx_receipt.logs[3].data
+          );
 
-        amount -= Number(amount_orai_rm_lp) / Math.pow(10, 18);
+          amount -= Number(amount_orai_rm_lp) / Math.pow(10, 18);
+        }
       }
     }
 
