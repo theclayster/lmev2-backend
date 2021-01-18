@@ -61,6 +61,7 @@ async function report14day(address_pool) {
   console.log(
     "----------------------------run filter tx drop----------------------------"
   );
+
   tx_drop = [];
   for (let i = 0; i < get_all_tx.length; i++) {
     try {
@@ -105,9 +106,8 @@ async function report14day(address_pool) {
     console.log(i);
     tx_hash = get_all_tx_burn.data.burns[i].id.substr(0, 66);
     data = await UniswapDB.findOne({ tx_id: tx_hash });
-    console.log(data);
+
     if (data != null) {
-      console.log("vao day");
       get_tx_data = await web3.eth.getTransaction(tx_hash);
 
       data_tx_omitted = {
