@@ -18,7 +18,6 @@ const TIME_STAMP_START = 1609354256; // thứ năm, 31 tháng 12 năm 2020 01:50
 const VAULT = "gold";
 const TIME_CHANGE_PERCENT = 1610762400;
 
-
 async function report14day(address_pool) {
   time_now = Math.floor(Date.now() / 1000);
 
