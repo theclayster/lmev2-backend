@@ -26,10 +26,11 @@ web3_socket = new Web3(
 async function test() {
 //   tuan =  await web3.utils.sha3('addLiquidityETH')
   // tx = await web3.eth.getTransactionReceipt("0xca781dd5a7762467a374e79b4e69b1f9ee5c1849a8a01d938c6f580022928abc")
-  // tuan = await LockRewardDB.find({
-  //   address: "0xf1f7d2cf581b5d2327e438c076d85cf18c3d1a3d",
-  // });
-  tuan = await LockRewardDB.findById("5ff5a605fb171d1d1623e1c8");
+  tuan = await UniswapDB.find({
+    // tx_id :"0xd693a761e85767c7e0e6a2c0379dce055d78c8d86ff22971225ac56bff6a1734"
+    address: "0x14fca733f9283caaa6d0f2294239ff379b29fd0a",
+  });
+  // tuan = await LockRewardDB.findById("5ff5a605fb171d1d1623e1c8");
 
   console.log("dady la ", JSON.stringify(tuan));
 }
@@ -37,6 +38,11 @@ async function test() {
 // b = (a*2*175*14)/(365*100*7)
 // console.log(b);
 test()
+// var unixTimestamp = new Date((1611280800) * 1000);
+// console.log(unixTimestamp);
+
+// console.log(Date.parse(unixTimestamp)/1000);
+
 // tuan = Math.round(new Date("2020-12-30T19:56:11.742+00:00") / 1000);
 // // /1609354258
 // console.log(tuan);

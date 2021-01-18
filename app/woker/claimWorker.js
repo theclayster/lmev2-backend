@@ -1,6 +1,6 @@
 const TIME_CRON_JOB = 300000; // 5phut
 const LockRewardDB = require("../database/lock_reward");
-const dbConfig = require("../database/db_config").dbs;
+const dbConfig = require("../database/db_config").db_claim;
 
 const requestPromise = require("request-promise");
 var fs = require("fs");
