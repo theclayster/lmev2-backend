@@ -6,6 +6,12 @@ const web3 = network_eth.get_lib_main_net();
 const Commom = require("../commom/constants");
 const oraiPool = require("../blockchain/abi/orai_pool.json");
 const decoder = new InputDataDecoder(oraiPool);
+const BackupDatabaseService = require("../service/backup_database");
+const CheckTxErrorService = require("../service/check_tx_error");
+const CheckTxRmOmitted = require("../service/check_tx_rm_omitted");
+const GetTxBefore16 = require("../service/get_tx_before_16");
+const GetTxAfter16 = require("../service/get_tx_after_16");
+require("dotenv").config();
 module.exports = {
   uniswap_liquidity: async (req, res, next) => {
     try {
@@ -317,6 +323,119 @@ module.exports = {
       return res
         .status(200)
         .send({ status: 200, msg: "method of tx_id not support" });
+    } catch (error) {
+      return res.status(200).send({ status: 500, error });
+    }
+  },
+  get_list_reward: async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        let error = errors.errors;
+        return res.status(200).send({ status: 500, error });
+      }
+
+      vault = req.body.vault;
+
+      if (
+        typeof process.env.ADDRESS_POOL == "undefined" ||
+        typeof process.env.TIME_STAMP_START == "undefined" ||
+        typeof process.env.TIME_STAMP_22 == "undefined" ||
+        typeof process.env.TIME_STAMP_16 == "undefined" ||
+        typeof process.env.ADDRESS_POOL == "undefined"
+      ) {
+        return res.status(200).send({
+          status: 200,
+          msg:
+            "You need config  TIME_STAMP_START=1609354256,TIME_STAMP_16=1610755322,ADDRESS_POOL=0x9081b50bad8beefac48cc616694c26b027c559bb in file .env",
+        });
+      }
+      let VAULT;
+      time_now = Math.floor(Date.now() / 1000);
+
+      if (vault == "platinum") {
+        VAULT = Commom.reward.platinum;
+      } else if (vault == "gold") {
+        VAULT = Commom.reward.gold;
+      } else if (vault == "silver") {
+        VAULT = Commom.reward.silver;
+      } else if (vault == "bronze") {
+        VAULT = Commom.reward.bronze;
+      } else {
+        return res.status(200).send({
+          status: 200,
+          msg: "Sorry ! System only support vault platium,gold,silver,bronze",
+        });
+      }
+
+      back_up_db = await BackupDatabaseService.backup_database();
+      if (back_up_db == false) {
+        return res.status(200).send({
+          status: 200,
+          msg: "Sorry ! Error when backup database",
+        });
+      }
+
+      checl_tx_error = await CheckTxErrorService.check_tx_error();
+      if (checl_tx_error == false) {
+        return res.status(200).send({
+          status: 200,
+          msg: "Sorry ! Error when check tx error in database",
+        });
+      }
+
+      check_tx_omitted = await CheckTxRmOmitted.check_tx_rm_omitted();
+      if (check_tx_omitted == false) {
+        return res.status(200).send({
+          status: 200,
+          msg: "Sorry ! Error when check tx rm omitted",
+        });
+      }
+
+      total_after_rm = [];
+      list_address = [];
+      reward_amound = [];
+
+      // kiểm tra tx trước ngày 16 xem còn nhận thưởng k
+      if (process.env.TIME_STAMP_22 > time_now) {
+        get_tx_before_22 = await GetTxBefore16.get_tx_before_16(
+          time_now,
+          VAULT
+        );
+
+        if (get_tx_before_22.status == 500) {
+          return res.status(200).send({
+            status: 200,
+            msg: "Sorry ! Error when get tx before 16/01/2020",
+          });
+        }
+
+        list_address.concat(get_tx_before_22.list_address);
+        reward_amound.concat(get_tx_before_22.reward_amound);
+        total_after_rm.concat(get_tx_before_22.total_after_rm);
+      }
+
+      get_tx_after_16 = await GetTxAfter16.get_tx_after_16(time_now, VAULT);
+      if (get_tx_after_16.status == 500) {
+        return res.status(200).send({
+          status: 200,
+          msg: "Sorry ! Error when get tx after 16/01/2020",
+        });
+      }
+      list_address.concat(get_tx_after_16.list_address);
+      reward_amound.concat(get_tx_after_16.reward_amound);
+      total_after_rm.concat(get_tx_after_16.total_after_rm);
+
+      data = {
+        list_address,
+        reward_amound,
+      };
+
+      return res.status(200).send({
+        status: 200,
+        data,
+        items: total_after_rm,
+      });
     } catch (error) {
       return res.status(200).send({ status: 500, error });
     }

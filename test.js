@@ -27,8 +27,8 @@ async function test() {
   //   tuan =  await web3.utils.sha3('addLiquidityETH')
   // tx = await web3.eth.getTransactionReceipt("0xc3c115d32c2d6734a6d690789af8c694cba7401152c6234d4fabb1023797982f")
   tuan = await UniswapDB.find({
-    // tx_id :"0xd693a761e85767c7e0e6a2c0379dce055d78c8d86ff22971225ac56bff6a1734"
-    address: "0xe29304f861d38cee951770cb5a23ac3cced3fbae",
+    // tx_id :"0xd693a761e85767c7e0e6a2c0379 qdce055d78c8d86ff22971225ac56bff6a1734"
+    address: "0xdf3261c35a8898fdd762f446c2ee2efbc65a34e9",
   });
   // // tuan = await LockRewardDB.findById("5ff5a605fb171d1d1623e1c8");
 
