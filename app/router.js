@@ -67,11 +67,11 @@ router.get(
   uniswap.get_uniswap_liquidity
 );
 
-router.post(
-  "/v0/get_list_reward",
-  [body("vault").notEmpty().withMessage("vault empty")],
-  uniswap.get_list_reward
-);
+// router.post(
+//   "/v0/get_list_reward",
+//   [body("vault").notEmpty().withMessage("vault empty")],
+//   uniswap.get_list_reward
+// );
 
 router.get("/v0/get_token", token.gen_token);
 
