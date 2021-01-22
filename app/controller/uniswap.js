@@ -144,78 +144,6 @@ module.exports = {
 
       for (let i = 0; i < data.length; i++) {
         createAt = Date.parse(data[i].createAt) / 1000;
-        // myBronze-----------------
-        if (
-          data[i].type == "addLiquidity" &&
-          data[i].vault == Commom.vault.bronze
-        ) {
-          if (createAt < time.bronze || time.bronze == 0) {
-            time.bronze = createAt;
-          }
-          myBronze += Number(data[i].amount);
-        }
-        if (
-          data[i].type == "removeLiquidity" &&
-          data[i].vault == Commom.vault.bronze
-        ) {
-          if (time.bronze > createAt) {
-            myBronze -= Number(data[i].amount);
-          }
-        }
-        // mySilver--------
-        if (
-          data[i].type == "addLiquidity" &&
-          data[i].vault == Commom.vault.silver
-        ) {
-          if (createAt < time.silver || time.silver == 0) {
-            time.silver = createAt;
-          }
-          mySilver += Number(data[i].amount);
-        }
-        if (
-          data[i].type == "removeLiquidity" &&
-          data[i].vault == Commom.vault.silver
-        ) {
-          if (time.silver > createAt) {
-            mySilver -= Number(data[i].amount);
-          }
-        }
-        //myGold---------
-        if (
-          data[i].type == "addLiquidity" &&
-          data[i].vault == Commom.vault.gold
-        ) {
-          if (createAt < time.gold || time.gold == 0) {
-            time.gold = createAt;
-          }
-          myGold += Number(data[i].amount);
-        }
-        if (
-          data[i].type == "removeLiquidity" &&
-          data[i].vault == Commom.vault.gold
-        ) {
-          if (time.gold > createAt) {
-            myGold -= Number(data[i].amount);
-          }
-        }
-        //myPlatinum--------
-        if (
-          data[i].type == "addLiquidity" &&
-          data[i].vault == Commom.vault.platinum
-        ) {
-          if (createAt < time.platinum || time.platinum == 0) {
-            time.platinum = createAt;
-          }
-          myPlatinum += Number(data[i].amount);
-        }
-        if (
-          data[i].type == "removeLiquidity" &&
-          data[i].vault == Commom.vault.platinum
-        ) {
-          if (time.platinum > createAt) {
-            myPlatinum -= Number(data[i].amount);
-          }
-        }
 
         let object = {
           _id: data[i]._id,
@@ -228,7 +156,86 @@ module.exports = {
           updateAt: Date.parse(data[i].updateAt) / 1000,
         };
 
-        transaction.push(object);
+        // myBronze-----------------
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.bronze
+        ) {
+          if (createAt < time.bronze || time.bronze == 0) {
+            time.bronze = createAt;
+          }
+          transaction.push(object);
+          myBronze += Number(data[i].amount);
+        }
+        if (
+          data[i].type == "removeLiquidity" &&
+          data[i].vault == Commom.vault.bronze
+        ) {
+          if (time.bronze > createAt) {
+            transaction.push(object);
+            myBronze -= Number(data[i].amount);
+          }
+        }
+        // mySilver--------
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.silver
+        ) {
+          if (createAt < time.silver || time.silver == 0) {
+            time.silver = createAt;
+          }
+          transaction.push(object);
+          mySilver += Number(data[i].amount);
+        }
+        if (
+          data[i].type == "removeLiquidity" &&
+          data[i].vault == Commom.vault.silver
+        ) {
+          if (time.silver > createAt) {
+            transaction.push(object);
+            mySilver -= Number(data[i].amount);
+          }
+        }
+        //myGold---------
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.gold
+        ) {
+          if (createAt < time.gold || time.gold == 0) {
+            time.gold = createAt;
+          }
+          transaction.push(object);
+          myGold += Number(data[i].amount);
+        }
+        if (
+          data[i].type == "removeLiquidity" &&
+          data[i].vault == Commom.vault.gold
+        ) {
+          if (time.gold > createAt) {
+            transaction.push(object);
+            myGold -= Number(data[i].amount);
+          }
+        }
+        //myPlatinum--------
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.platinum
+        ) {
+          if (createAt < time.platinum || time.platinum == 0) {
+            time.platinum = createAt;
+          }
+          transaction.push(object);
+          myPlatinum += Number(data[i].amount);
+        }
+        if (
+          data[i].type == "removeLiquidity" &&
+          data[i].vault == Commom.vault.platinum
+        ) {
+          if (time.platinum > createAt) {
+            transaction.push(object);
+            myPlatinum -= Number(data[i].amount);
+          }
+        }
       }
 
       return res.status(200).send({
