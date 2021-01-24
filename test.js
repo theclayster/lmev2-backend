@@ -1,43 +1,43 @@
-// const InputDataDecoder = require("ethereum-input-data-decoder");
-// abi = require("./app/blockchain/abi/test.json");
-// const eth_network = require("./app/blockchain/network/eth");
-// const decoder = new InputDataDecoder(abi);
-// const OraiEnventDB = require("./app/database/transacion_lock");
-// const Web3 = require("web3");
-// const UniswapDB = require("./app/database/uniswap");
-// const mongoose = require("mongoose");
-// const dbConfig = require("./app/database/db_config");
-// const LockRewardDB = require("./app/database/lock_reward");
-// // config mongo
-// mongoose.connect(dbConfig.dbs, {
-//   useNewUrlParser: true,
-// });
-// const web3 = new Web3(
-//   new Web3.providers.HttpProvider(
-//     "https://mainnet.infura.io/v3/f19c5e0f2fd047e9bc14b5fdd5577e5b"
-//   )
-// );
-// web3_socket = new Web3(
-//   new Web3.providers.WebsocketProvider(
-//     "wss://mainnet.infura.io/ws/v3/f19c5e0f2fd047e9bc14b5fdd5577e5b"
-//   )
-// );
+const InputDataDecoder = require("ethereum-input-data-decoder");
+abi = require("./app/blockchain/abi/test.json");
+const eth_network = require("./app/blockchain/network/eth");
+const decoder = new InputDataDecoder(abi);
+const OraiEnventDB = require("./app/database/transacion_lock");
+const Web3 = require("web3");
+const UniswapDB = require("./app/database/uniswap");
+const mongoose = require("mongoose");
+const dbConfig = require("./app/database/db_config");
+const LockRewardDB = require("./app/database/lock_reward");
+// config mongo
+mongoose.connect(dbConfig.dbs, {
+  useNewUrlParser: true,
+});
+const web3 = new Web3(
+  new Web3.providers.HttpProvider(
+    "https://mainnet.infura.io/v3/f19c5e0f2fd047e9bc14b5fdd5577e5b"
+  )
+);
+web3_socket = new Web3(
+  new Web3.providers.WebsocketProvider(
+    "wss://mainnet.infura.io/ws/v3/f19c5e0f2fd047e9bc14b5fdd5577e5b"
+  )
+);
 
-// async function test() {
-//   //   tuan =  await web3.utils.sha3('addLiquidityETH')
-//   // tx = await web3.eth.getTransactionReceipt("0xc3c115d32c2d6734a6d690789af8c694cba7401152c6234d4fabb1023797982f")
-//   tuan = await UniswapDB.find({
-//     // tx_id :"0xd693a761e85767c7e0e6a2c0379dce055d78c8d86ff22971225ac56bff6a1734"
-//     address: "0xe29304f861d38cee951770cb5a23ac3cced3fbae",
-//   });
-//   // // tuan = await LockRewardDB.findById("5ff5a605fb171d1d1623e1c8");
+async function test() {
+  //   tuan =  await web3.utils.sha3('addLiquidityETH')
+  // tx = await web3.eth.getTransactionReceipt("0xc3c115d32c2d6734a6d690789af8c694cba7401152c6234d4fabb1023797982f")
+  tuan = await UniswapDB.find({
+    // tx_id :"0xd693a761e85767c7e0e6a2c0379dce055d78c8d86ff22971225ac56bff6a1734"
+    address: "0xbc59b8c76272f8b2acc757197f7d1cc4e794f6cb",
+  });
+  // // tuan = await LockRewardDB.findById("5ff5a605fb171d1d1623e1c8");
 
-//   console.log("dady la ", JSON.stringify(tuan));
-// }
-// // a = 0.0006207176782038193
-// // b = (a*2*175*14)/(365*100*7)
-// // console.log(b);
-// test();
+  console.log("dady la ", JSON.stringify(tuan));
+}
+// a = 0.0006207176782038193
+// b = (a*2*175*14)/(365*100*7)
+// console.log(b);
+test();
 // var unixTimestamp = new Date((1611280800) * 1000);
 // console.log(unixTimestamp);
 
