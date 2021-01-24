@@ -299,7 +299,7 @@ module.exports = {
         amount_lp = web3.utils.hexToNumberString(get_tx_receipt.logs[3].data);
         data = await new UniswapDB({
           type: Commom.type_uniswap.add_lp,
-          address: address,
+          address: address.toLowerCase(),
           amount: amount_lp,
           vault: vault,
           tx_id: tx_id,
