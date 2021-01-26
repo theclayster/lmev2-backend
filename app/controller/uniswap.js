@@ -137,7 +137,7 @@ module.exports = {
 
       time = {
         gold: 0,
-        platium: 0,
+        platinum: 0,
         bronze: 0,
         silver: 0,
       };
@@ -171,7 +171,7 @@ module.exports = {
           data[i].type == "removeLiquidity" &&
           data[i].vault == Commom.vault.bronze
         ) {
-          if (time.bronze > createAt) {
+          if (time.bronze <  createAt) {
             transaction.push(object);
             myBronze -= Number(data[i].amount);
           }
@@ -191,7 +191,7 @@ module.exports = {
           data[i].type == "removeLiquidity" &&
           data[i].vault == Commom.vault.silver
         ) {
-          if (time.silver > createAt) {
+          if (time.silver <  createAt) {
             transaction.push(object);
             mySilver -= Number(data[i].amount);
           }
@@ -211,7 +211,7 @@ module.exports = {
           data[i].type == "removeLiquidity" &&
           data[i].vault == Commom.vault.gold
         ) {
-          if (time.gold > createAt) {
+          if (time.gold <  createAt) {
             transaction.push(object);
             myGold -= Number(data[i].amount);
           }
@@ -231,13 +231,13 @@ module.exports = {
           data[i].type == "removeLiquidity" &&
           data[i].vault == Commom.vault.platinum
         ) {
-          if (time.platinum > createAt) {
+          if (time.platinum <  createAt) {
             transaction.push(object);
             myPlatinum -= Number(data[i].amount);
           }
         }
       }
-
+      // console.log("day la ",time);
       return res.status(200).send({
         status: 200,
         data: {
