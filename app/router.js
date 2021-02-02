@@ -67,6 +67,15 @@ router.get(
   uniswap.get_uniswap_liquidity
 );
 
+router.post(
+  "/v0/record",
+  [
+    body("vault").notEmpty().withMessage("vault empty"),
+    body("tx_id").notEmpty().withMessage("tx empty"),
+  ],
+  uniswap.add_tx_database
+);
+
 router.get("/v0/get_token", token.gen_token);
 
 module.exports = router;
