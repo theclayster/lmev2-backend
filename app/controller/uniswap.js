@@ -5,6 +5,7 @@ const network_eth = require("../blockchain/network/eth");
 const web3 = network_eth.get_lib_main_net();
 const Commom = require("../commom/constants");
 const oraiPool = require("../blockchain/abi/orai_pool.json");
+const get_tx = require("../query_subgraph/get_tx");
 const decoder = new InputDataDecoder(oraiPool);
 module.exports = {
   uniswap_liquidity: async (req, res, next) => {
@@ -141,6 +142,41 @@ module.exports = {
         bronze: 0,
         silver: 0,
       };
+      for (let i = 0; i < data.length; i++) {
+        createAt = Date.parse(data[i].createAt) / 1000;
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.bronze
+        ) {
+          if (createAt < time.bronze || time.bronze == 0) {
+            time.bronze = createAt;
+          }
+        }
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.silver
+        ) {
+          if (createAt < time.silver || time.silver == 0) {
+            time.silver = createAt;
+          }
+        }
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.gold
+        ) {
+          if (createAt < time.gold || time.gold == 0) {
+            time.gold = createAt;
+          }
+        }
+        if (
+          data[i].type == "addLiquidity" &&
+          data[i].vault == Commom.vault.platinum
+        ) {
+          if (createAt < time.platinum || time.platinum == 0) {
+            time.platinum = createAt;
+          }
+        }
+      }
 
       for (let i = 0; i < data.length; i++) {
         createAt = Date.parse(data[i].createAt) / 1000;
@@ -161,9 +197,6 @@ module.exports = {
           data[i].type == "addLiquidity" &&
           data[i].vault == Commom.vault.bronze
         ) {
-          if (createAt < time.bronze || time.bronze == 0) {
-            time.bronze = createAt;
-          }
           transaction.push(object);
           myBronze += Number(data[i].amount);
         }
@@ -171,7 +204,7 @@ module.exports = {
           data[i].type == "removeLiquidity" &&
           data[i].vault == Commom.vault.bronze
         ) {
-          if (time.bronze <  createAt) {
+          if (time.bronze < createAt) {
             transaction.push(object);
             myBronze -= Number(data[i].amount);
           }
@@ -181,9 +214,6 @@ module.exports = {
           data[i].type == "addLiquidity" &&
           data[i].vault == Commom.vault.silver
         ) {
-          if (createAt < time.silver || time.silver == 0) {
-            time.silver = createAt;
-          }
           transaction.push(object);
           mySilver += Number(data[i].amount);
         }
@@ -191,7 +221,7 @@ module.exports = {
           data[i].type == "removeLiquidity" &&
           data[i].vault == Commom.vault.silver
         ) {
-          if (time.silver <  createAt) {
+          if (time.silver < createAt) {
             transaction.push(object);
             mySilver -= Number(data[i].amount);
           }
@@ -201,9 +231,6 @@ module.exports = {
           data[i].type == "addLiquidity" &&
           data[i].vault == Commom.vault.gold
         ) {
-          if (createAt < time.gold || time.gold == 0) {
-            time.gold = createAt;
-          }
           transaction.push(object);
           myGold += Number(data[i].amount);
         }
@@ -211,7 +238,7 @@ module.exports = {
           data[i].type == "removeLiquidity" &&
           data[i].vault == Commom.vault.gold
         ) {
-          if (time.gold <  createAt) {
+          if (time.gold < createAt) {
             transaction.push(object);
             myGold -= Number(data[i].amount);
           }
@@ -221,9 +248,6 @@ module.exports = {
           data[i].type == "addLiquidity" &&
           data[i].vault == Commom.vault.platinum
         ) {
-          if (createAt < time.platinum || time.platinum == 0) {
-            time.platinum = createAt;
-          }
           transaction.push(object);
           myPlatinum += Number(data[i].amount);
         }
@@ -231,7 +255,7 @@ module.exports = {
           data[i].type == "removeLiquidity" &&
           data[i].vault == Commom.vault.platinum
         ) {
-          if (time.platinum <  createAt) {
+          if (time.platinum < createAt) {
             transaction.push(object);
             myPlatinum -= Number(data[i].amount);
           }
@@ -356,5 +380,75 @@ module.exports = {
     } catch (error) {
       return res.status(200).send({ status: 500, error });
     }
+  },
+  add_tx_database: async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      let error = errors.errors;
+      return res.status(200).send({ status: 500, error });
+    }
+    let tx_id = req.body.tx_id;
+    let vault = req.body.vault;
+
+    get_tx_db = await UniswapDB.find({
+      tx_id: tx_id,
+    });
+    if (get_tx_db) {
+      return res.status(200).send({
+        status: 200,
+        msg: "tx_id already exist in db ",
+        item: get_tx_db,
+      });
+    }
+
+    get_tx_data = await web3.eth.getTransaction(tx_id);
+    console.log(get_tx_data);
+    if (!get_tx_data) {
+      return res
+        .status(200)
+        .send({ status: 500, msg: "tx_id " + tx_id + " not exist" });
+    }
+
+    decodeTx = await decoder.decodeData(get_tx_data.input);
+    get_tx_receipt = await web3.eth.getTransactionReceipt(tx_id);
+    console.log(decodeTx);
+    if (!get_tx_receipt || get_tx_receipt.status === false) {
+      return res
+        .status(200)
+        .send({ status: 500, msg: "tx_id have status false" });
+    }
+
+    let result;
+    if (decodeTx.method == "addLiquidityETH") {
+      amount =
+        Number(web3.utils.hexToNumberString(get_tx_receipt.logs[3].data)) /
+        Math.pow(10, 18);
+
+      result = await new UniswapDB({
+        type: "addLiquidity",
+        address: get_tx_data.from,
+        amount,
+        vault,
+        tx_id,
+      }).save();
+    } else if (decodeTx.method == "removeLiquidityETHWithPermit") {
+      amount =
+        Number(web3.utils.hexToNumberString(decodeTx.inputs[1])) /
+        Math.pow(10, 18);
+
+      result = await new UniswapDB({
+        type: "removeLiquidity",
+        address: get_tx_data.from,
+        amount,
+        vault,
+        tx_id,
+      }).save();
+    } else {
+      return res
+        .status(200)
+        .send({ status: 500, msg: "tx have method not support" });
+    }
+
+    return res.status(200).send({ status: 200, item: result });
   },
 };

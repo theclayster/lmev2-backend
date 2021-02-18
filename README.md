@@ -63,3 +63,7 @@ trong file /app/database/db_config.js
 tạo biến db_claim = "url", cẩn thận là database test hơn là live.
 trong ./worker_config/claimWorker.js điền block number bắt đầu. Hiện tại block number lên là 11620095
 chạy node claimWorker.js
+
+
+## link postman
+https://www.getpostman.com/collections/fec57179660d03bf1b7c
