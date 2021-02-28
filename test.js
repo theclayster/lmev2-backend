@@ -5,6 +5,7 @@ const decoder = new InputDataDecoder(abi);
 const OraiEnventDB = require("./app/database/transacion_lock");
 const Web3 = require("web3");
 const UniswapDB = require("./app/database/uniswap");
+const ClaimDb = require("./app/database/claim");
 const mongoose = require("mongoose");
 const dbConfig = require("./app/database/db_config");
 const LockRewardDB = require("./app/database/lock_reward");
@@ -25,10 +26,10 @@ web3_socket = new Web3(
 
 async function test() {
   //   tuan =  await web3.utils.sha3('addLiquidityETH')
-  // tx = await web3.eth.getTransactionReceipt("0xc3c115d32c2d6734a6d690789af8c694cba7401152c6234d4fabb1023797982f")
-  tuan = await UniswapDB.find({
-    // tx_id :"0xd693a761e85767c7e0e6a2c0379dce055d78c8d86ff22971225ac56bff6a1734"
-    address: "0x2cf1dae5e529f3025d5d0036d59da06a024fb706",
+  // tx = await web3.eth.getTransactionReceipt("0x1f933db2828680cd01586614574d7669001dbae7739e6ccb010a035d9a2a2b67")
+  tuan = await ClaimDb.find({
+    tx_id :"0x3c5c91ebacd71f09e6d3d5f2777f30dea29a1e65633edabc44621e07d4c49c6a"
+    // address: "0x2cf1dae5e529f3025d5d0036d59da06a024fb706",
   });
   // // tuan = await LockRewardDB.findById("5ff5a605fb171d1d1623e1c8");
 
