@@ -65,5 +65,10 @@ trong ./worker_config/claimWorker.js điền block number bắt đầu. Hiện t
 chạy node claimWorker.js
 
 
+## Cách sử dụng api claim 
+Vào thư mục ./app/woker/claimDB/claims.json
+Import file claims vào mongodb với collection là claims
+
+
 ## link postman
 https://www.getpostman.com/collections/fec57179660d03bf1b7c
