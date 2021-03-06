@@ -39,7 +39,7 @@ router.post(
         body("vault").notEmpty().withMessage("vault empty"),
         body("txid").notEmpty().withMessage("txid empty"),
     ],
-    uniswap.uniswap_liquidity
+    uniswap.uniswap_liquidity_v1
 );
 
 router.get(

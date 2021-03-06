@@ -4,41 +4,41 @@ var fs = require("fs");
 const mongoose = require("mongoose");
 // config mongo
 mongoose.connect(dbConfig, {
-  useNewUrlParser: true,
+    useNewUrlParser: true,
 });
 
 async function convertLowercase() {
-  get_all_data = await UniswapDB.find();
-  list_address_lowercase = [];
+    get_all_data = await UniswapDB.find();
+    list_address_lowercase = [];
 
-  for (let i = 0; i < get_all_data.length; i++) {
-    var count = 0;
-    while (count <= get_all_data[i].address.length) {
-      character = get_all_data[i].address.charAt(count);
+    for (let i = 0; i < get_all_data.length; i++) {
+        var count = 0;
+        while (count <= get_all_data[i].tx_id.length) {
+            character = get_all_data[i].tx_id.charAt(count);
 
-      if (character == character.toUpperCase() && isNaN(character)) {
-      
-        await UniswapDB.updateOne(
-          { _id: get_all_data[i]._id },
-          { $set: { address: get_all_data[i].address.toLowerCase() } }
-        );
-        list_address_lowercase.push(get_all_data[i].address);
-        break;
-      }
+            if (character == character.toUpperCase() && isNaN(character)) {
 
-      count++;
+                // await UniswapDB.updateOne(
+                //   { _id: get_all_data[i]._id },
+                //   { $set: { address: get_all_data[i].address.toLowerCase() } }
+                // );
+                list_address_lowercase.push(get_all_data[i].tx_id);
+                break;
+            }
+
+            count++;
+        }
     }
-  }
-  //   console.log(list_address_lowercase);
-  fs.writeFile(
-    "./address/address_upcase.json",
-    JSON.stringify(list_address_lowercase),
-    "utf8",
-    function (err) {
-      if (err) throw err;
-      else console.log("Ghi file address_upcase thanh cong!");
-    }
-  );
+      console.log(list_address_lowercase);
+    fs.writeFile(
+        "./address/address_upcase.json",
+        JSON.stringify(list_address_lowercase),
+        "utf8",
+        function (err) {
+            if (err) throw err;
+            else console.log("Ghi file address_upcase thanh cong!");
+        }
+    );
 }
 
 convertLowercase();
